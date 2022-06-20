@@ -18,6 +18,7 @@ router.post(
   ], // Express Validator package used
   async (req, res) => {
     // If there are errors, return Bad Request and errors
+    let success = false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -43,7 +44,8 @@ router.post(
         },
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
-      res.json({ authtoken });
+      success = true;
+      res.json({ success, authtoken });
     } catch (error) {
       // Catch errors
       console.error(error);

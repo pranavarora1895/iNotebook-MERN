@@ -12,8 +12,7 @@ const NoteState = (props) => {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjJhMTlkZWExNTc4MGJhNDBmY2FkZTAyIn0sImlhdCI6MTY1NDgzMDk4OH0.rVygaHAP2_Dh7UznTlJLbvtVDVh-0MBKgNtqxNzZ2dE",
+        "auth-token": localStorage.getItem("token"),
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
@@ -28,8 +27,7 @@ const NoteState = (props) => {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjJhMTlkZWExNTc4MGJhNDBmY2FkZTAyIn0sImlhdCI6MTY1NDgzMDk4OH0.rVygaHAP2_Dh7UznTlJLbvtVDVh-0MBKgNtqxNzZ2dE",
+        "auth-token": localStorage.getItem("token"),
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
 
@@ -47,11 +45,12 @@ const NoteState = (props) => {
       method: "DELETE", // *GET, POST, PUT, DELETE, etc.
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjJhMTlkZWExNTc4MGJhNDBmY2FkZTAyIn0sImlhdCI6MTY1NDgzMDk4OH0.rVygaHAP2_Dh7UznTlJLbvtVDVh-0MBKgNtqxNzZ2dE",
+        "auth-token": localStorage.getItem("token"),
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
+    const json = await response.json();
+    console.log(json);
 
     const newNotes = notes.filter((note) => {
       return note._id !== id;
@@ -66,22 +65,28 @@ const NoteState = (props) => {
       method: "PUT", // *GET, POST, PUT, DELETE, etc.
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjJhMTlkZWExNTc4MGJhNDBmY2FkZTAyIn0sImlhdCI6MTY1NDgzMDk4OH0.rVygaHAP2_Dh7UznTlJLbvtVDVh-0MBKgNtqxNzZ2dE",
+        "auth-token": localStorage.getItem("token"),
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
 
       body: JSON.stringify({ title, description, tag }),
     });
 
-    for (let index = 0; index < notes.length; index++) {
-      const element = notes[index];
+    const json = await response.json();
+    console.log(json);
+
+    let newNotes = JSON.parse(JSON.stringify(notes));
+
+    for (let index = 0; index < newNotes.length; index++) {
+      const element = newNotes[index];
       if (element._id === id) {
-        element.title = title;
-        element.description = description;
-        element.tag = tag;
+        newNotes[index].title = title;
+        newNotes[index].description = description;
+        newNotes[index].tag = tag;
+        break;
       }
     }
+    setNotes(newNotes);
   };
   return (
     <NoteContext.Provider
